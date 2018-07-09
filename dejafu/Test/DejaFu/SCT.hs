@@ -26,8 +26,6 @@ module Test.DejaFu.SCT
   -- * Deprecated
   , runSCTDiscard
   , runSCTDiscard'
-  , resultsSetDiscard
-  , resultsSetDiscard'
   ) where
 
 import           Control.Applicative               ((<|>))
@@ -100,24 +98,6 @@ runSCTDiscard :: MonadConc n
 runSCTDiscard discard way = runSCTWithSettings . set ldiscard (Just discard) . fromWayAndMemType way
 {-# DEPRECATED runSCTDiscard "Use runSCTWithSettings instead" #-}
 
--- | A variant of 'resultsSet' which can selectively discard results.
---
--- @since 1.0.0.0
-resultsSetDiscard :: (MonadConc n, Ord a)
-  => (Either Failure a -> Maybe Discard)
-  -- ^ Selectively discard results.  Traces are always discarded.
-  -> Way
-  -- ^ How to run the concurrent program.
-  -> MemType
-  -- ^ The memory model to use for non-synchronised @IORef@ operations.
-  -> ConcT n a
-  -- ^ The computation to run many times.
-  -> n (Set (Either Failure a))
-resultsSetDiscard discard way memtype conc =
-  let discard' efa = discard efa <|> Just DiscardTrace
-  in S.fromList . map fst <$> runSCTDiscard discard' way memtype conc
-{-# DEPRECATED resultsSetDiscard "Use resultsSetWithSettings instead" #-}
-
 -- | A strict variant of 'runSCT'.
 --
 -- Demanding the result of this will force it to normal form, which
@@ -156,19 +136,6 @@ runSCTDiscard' discard way memtype conc = do
   res <- runSCTDiscard discard way memtype conc
   rnf res `seq` pure res
 {-# DEPRECATED runSCTDiscard' "Use runSCTWithSettings' instead" #-}
-
--- | A strict variant of 'resultsSetDiscard'.
---
--- Demanding the result of this will force it to normal form, which
--- may be more efficient in some situations.
---
--- @since 1.0.0.0
-resultsSetDiscard' :: (MonadConc n, Ord a, NFData a)
-  => (Either Failure a -> Maybe Discard) -> Way -> MemType -> ConcT n a -> n (Set (Either Failure a))
-resultsSetDiscard' discard way memtype conc = do
-  res <- resultsSetDiscard discard way memtype conc
-  rnf res `seq` pure res
-{-# DEPRECATED resultsSetDiscard' "Use resultsSetWithSettings' instead" #-}
 
 -------------------------------------------------------------------------------
 -- Configuration

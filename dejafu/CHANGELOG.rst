@@ -16,6 +16,8 @@ Removed
 * The deprecated functions:
 
     * ``Test.DejaFu.dejafuDiscard``
+    * ``Test.DejaFu.SCT.resultsSetDiscard``
+    * ``Test.DejaFu.SCT.resultsSetDiscard'``
     * ``Test.DejaFu.SCT.sctBound``
     * ``Test.DejaFu.SCT.sctBoundDiscard``
     * ``Test.DejaFu.SCT.sctUniformRandom``
