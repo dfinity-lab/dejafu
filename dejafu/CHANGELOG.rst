@@ -18,6 +18,8 @@ Removed
     * ``Test.DejaFu.dejafuDiscard``
     * ``Test.DejaFu.SCT.sctBound``
     * ``Test.DejaFu.SCT.sctBoundDiscard``
+    * ``Test.DejaFu.SCT.sctUniformRandom``
+    * ``Test.DejaFu.SCT.sctUniformRandomDiscard``
 
 
 1.11.0.2 (2018-07-08)
