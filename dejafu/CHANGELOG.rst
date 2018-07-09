@@ -13,7 +13,11 @@ unreleased
 Removed
 ~~~~~~~
 
-* The deprecated function ``Test.DejaFu.dejafuDiscard``
+* The deprecated functions:
+
+    * ``Test.DejaFu.dejafuDiscard``
+    * ``Test.DejaFu.SCT.sctBound``
+    * ``Test.DejaFu.SCT.sctBoundDiscard``
 
 
 1.11.0.2 (2018-07-08)
