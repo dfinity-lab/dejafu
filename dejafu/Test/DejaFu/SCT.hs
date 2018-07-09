@@ -1,5 +1,3 @@
-{-# OPTIONS_GHC -Wno-deprecations #-}
-
 -- |
 -- Module      : Test.DejaFu.SCT
 -- Copyright   : (c) 2015--2018 Michael Walker
@@ -22,10 +20,6 @@ module Test.DejaFu.SCT
   , resultsSetWithSettings
   , resultsSetWithSettings'
   , module Test.DejaFu.Settings
-
-  -- * Deprecated
-  , runSCTDiscard
-  , runSCTDiscard'
   ) where
 
 import           Control.Applicative               ((<|>))
@@ -79,25 +73,6 @@ resultsSet :: (MonadConc n, Ord a)
   -> n (Set (Either Failure a))
 resultsSet way = resultsSetWithSettings . fromWayAndMemType way
 
--- | A variant of 'runSCT' which can selectively discard results.
---
--- The exact executions tried, and the order in which results are
--- found, is unspecified and may change between releases.
---
--- @since 1.0.0.0
-runSCTDiscard :: MonadConc n
-  => (Either Failure a -> Maybe Discard)
-  -- ^ Selectively discard results.
-  -> Way
-  -- ^ How to run the concurrent program.
-  -> MemType
-  -- ^ The memory model to use for non-synchronised @IORef@ operations.
-  -> ConcT n a
-  -- ^ The computation to run many times.
-  -> n [(Either Failure a, Trace)]
-runSCTDiscard discard way = runSCTWithSettings . set ldiscard (Just discard) . fromWayAndMemType way
-{-# DEPRECATED runSCTDiscard "Use runSCTWithSettings instead" #-}
-
 -- | A strict variant of 'runSCT'.
 --
 -- Demanding the result of this will force it to normal form, which
@@ -120,22 +95,6 @@ runSCT' way = runSCTWithSettings' . fromWayAndMemType way
 resultsSet' :: (MonadConc n, Ord a, NFData a)
   => Way -> MemType -> ConcT n a -> n (Set (Either Failure a))
 resultsSet' way = resultsSetWithSettings' . fromWayAndMemType way
-
--- | A strict variant of 'runSCTDiscard'.
---
--- Demanding the result of this will force it to normal form, which
--- may be more efficient in some situations.
---
--- The exact executions tried, and the order in which results are
--- found, is unspecified and may change between releases.
---
--- @since 1.0.0.0
-runSCTDiscard' :: (MonadConc n, NFData a)
-  => (Either Failure a -> Maybe Discard) -> Way -> MemType -> ConcT n a -> n [(Either Failure a, Trace)]
-runSCTDiscard' discard way memtype conc = do
-  res <- runSCTDiscard discard way memtype conc
-  rnf res `seq` pure res
-{-# DEPRECATED runSCTDiscard' "Use runSCTWithSettings' instead" #-}
 
 -------------------------------------------------------------------------------
 -- Configuration
